@@ -1,7 +1,11 @@
-import Theme from '../models/Theme';
+import Theme from 'models/Theme';
 
 const defaultTheme: Theme = {
     name: 'default',
-    darkGreen: '#025648'
+    primaryColor: '#025648',
+    darkGreen: '#025648',
+    white: '#FFF',
+    gray: '#707070',
+    black: '#000',
 };
 export default defaultTheme;
