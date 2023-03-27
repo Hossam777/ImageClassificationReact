@@ -7,5 +7,6 @@ const defaultTheme: Theme = {
     white: '#FFF',
     gray: '#707070',
     black: '#000',
+    orange: '#EC8E31'
 };
 export default defaultTheme;

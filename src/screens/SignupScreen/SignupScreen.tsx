@@ -25,6 +25,13 @@ const SignupScreen = (props: Props) => {
     const [confirmPassword, onChangeConfirmPassword] = useState('');
     const signup = () => {
         onChangeForceValidate(forceValidate + "1")
+        if(!validateNameAndGetErrorMessage(name).length &&
+        !validateNameAndGetErrorMessage(title).length &&
+        !validateEmailAndGetErrorMessage(email).length &&
+        !validatePasswordAndGetErrorMessage(password).length &&
+        !validateConfirmPasswordAndGetErrorMessage(password, confirmPassword).length){
+            console.log('Signup')
+        }
     }
     return (
         <ImageBackground
@@ -36,8 +43,7 @@ const SignupScreen = (props: Props) => {
                 leftIcon={require('../../assets/images/backward_arrow.png')}
                 leftIconPress={goBack}
             />
-            <ScrollView>
-                <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.container}>
                     <Text style={styles.header1}>Welcome</Text>
                     <Text style={styles.header2}>Please Enter your Details to Signup</Text>
                     <View style={styles.nameView}>
@@ -110,7 +116,6 @@ const SignupScreen = (props: Props) => {
                         text="Create Account"
                         onPress={signup}
                     />
-                </View>
             </ScrollView>
         </ImageBackground>
     );
@@ -121,12 +126,13 @@ const getStyles = (theme: Theme) => StyleSheet.create({
         flex: 1,
     },
     container: {
-        justifyContent: 'center',
+        alignItems: 'center',
     },
     header1: {
         width: '100%',
         paddingHorizontal: 26,
         fontSize: 40,
+        color: theme.orange
     },
     header2: {
         width: '100%',

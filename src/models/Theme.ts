@@ -5,5 +5,6 @@ type Theme = {
   white: string;
   gray: string;
   black: string;
+  orange: string;
 };
 export default Theme;

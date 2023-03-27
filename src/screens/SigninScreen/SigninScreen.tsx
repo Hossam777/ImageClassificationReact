@@ -18,9 +18,14 @@ const SigninScreen = (props: Props) => {
     const styles = getStyles(theme);
     const [email, onChangeEmail] = useState('');
     const [password, onChangePassword] = useState('');
+    const [forceValidate, onChangeForceValidate] = useState('');
     const toSignup = () => props.navigation.navigate('SignupScreen');
     const login = () => {
-        console.log('login')
+        onChangeForceValidate(forceValidate + "1")
+        if(!validateEmailAndGetErrorMessage(email).length &&
+        !validatePasswordAndGetErrorMessage(password).length){
+            console.log('login')
+        }
     }
     const goBack = () => props.navigation.goBack();
     return (
@@ -33,8 +38,7 @@ const SigninScreen = (props: Props) => {
                 leftIcon={require('../../assets/images/backward_arrow.png')}
                 leftIconPress={goBack}
             />
-            <ScrollView>
-                <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.container}>
                     <Text style={styles.header1}>Hello Back</Text>
                     <Text style={styles.header2}>Please Enter E-Mail and Password to Signin</Text>
                     <InputText
@@ -46,6 +50,7 @@ const SigninScreen = (props: Props) => {
                         onChangeText={onChangeEmail}
                         value={email}
                         validator={validateEmailAndGetErrorMessage}
+                        forceValidation={forceValidate}
                     />
                     <InputText
                         textInputStyle={{ fontSize: 14, color: theme.black }}
@@ -56,6 +61,7 @@ const SigninScreen = (props: Props) => {
                         onChangeText={onChangePassword}
                         value={password}
                         validator={validatePasswordAndGetErrorMessage}
+                        forceValidation={forceValidate}
                     />
                     <Button
                         width={148}
@@ -65,14 +71,12 @@ const SigninScreen = (props: Props) => {
                         marginTop={64}
                         textSize={16}
                         text="Signin"
-                        alignSelf='center'
                         onPress={login}
                     />
                     <View style={styles.signupView}>
                         <Text style={styles.toSignupTxt}>To Signup Press</Text>
-                        <Text style={styles.signupBtn} onPress={toSignup}>Here</Text>
+                        <Text style={styles.loginBtn} onPress={toSignup}>Here</Text>
                     </View>
-                </View>
             </ScrollView>
         </ImageBackground>
     );
@@ -84,12 +88,13 @@ const getStyles = (theme: Theme) => StyleSheet.create({
     },
     container: {
         flex: 1,
+        alignItems: 'center'
     },
     header1: {
         width: '100%',
         paddingHorizontal: 26,
         fontSize: 40,
-        color: '#EC8E31',
+        color: theme.orange
     },
     header2: {
         width: '100%',
@@ -107,7 +112,7 @@ const getStyles = (theme: Theme) => StyleSheet.create({
         fontSize: 24,
         color: theme.black,
     },
-    signupBtn: {
+    loginBtn: {
         color: theme.darkGreen,
         fontSize: 24,
         marginHorizontal: 3,
@@ -118,7 +123,6 @@ const getStyles = (theme: Theme) => StyleSheet.create({
         borderColor: theme.darkGreen,
         borderWidth: 3,
         marginTop: 45,
-        alignSelf: 'center',
     },
 })
 
