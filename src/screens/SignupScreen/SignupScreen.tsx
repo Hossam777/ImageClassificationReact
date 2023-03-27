@@ -6,6 +6,8 @@ import Theme from 'models/Theme';
 import ThemeContext from 'theme/ThemeContext';
 import { MainNavigationStackParams } from 'navigation/MainNavigationStack';
 import TabBar from '../../components/TabBar';
+import { validateConfirmPasswordAndGetErrorMessage, validateEmailAndGetErrorMessage, validateNameAndGetErrorMessage, validatePasswordAndGetErrorMessage } from '../../utils/Validator';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type Props = {
     navigation: StackNavigationProp<MainNavigationStackParams, 'SignupScreen'>
@@ -14,106 +16,117 @@ type Props = {
 const SignupScreen = (props: Props) => {
     const theme = useContext(ThemeContext);
     const styles = getStyles(theme);
-
-    const signup = () => {}
+    const goBack = () => props.navigation.goBack()
+    const [forceValidate, onChangeForceValidate] = useState('');
+    const [name, onChangeName] = useState('');
+    const [title, onChangeTitle] = useState('');
+    const [email, onChangeEmail] = useState('');
+    const [password, onChangePassword] = useState('');
+    const [confirmPassword, onChangeConfirmPassword] = useState('');
+    const signup = () => {
+        onChangeForceValidate(forceValidate + "1")
+    }
     return (
-        <View style={styles.container}>
-            <ImageBackground 
+        <ImageBackground
             style={styles.background}
             source={require('../../assets/images/background.png')}
             resizeMode='stretch'>
-                <TabBar 
+            <TabBar
                 title='Signup'
                 leftIcon={require('../../assets/images/backward_arrow.png')}
-                />
-                <Text style={styles.header1}>Welcome</Text>
-                <Text style={styles.header2}>Please Enter your Details to Signup</Text>
-                <View style={styles.nameView}>
+                leftIconPress={goBack}
+            />
+            <ScrollView>
+                <View style={styles.container}>
+                    <Text style={styles.header1}>Welcome</Text>
+                    <Text style={styles.header2}>Please Enter your Details to Signup</Text>
+                    <View style={styles.nameView}>
+                        <InputText
+                            textInputStyle={{ fontSize: 14, color: theme.black }}
+                            textAlign={'left'}
+                            containerStyle={styles.textInputSmallWidth}
+                            hint='Name'
+                            hintColor={theme.gray}
+                            onChangeText={onChangeName}
+                            value={name}
+                            validator={validateNameAndGetErrorMessage}
+                            forceValidation={forceValidate}
+                        />
+                        <InputText
+                            textInputStyle={{ fontSize: 14, color: theme.black }}
+                            textAlign={'left'}
+                            hint='Title'
+                            hintColor={theme.gray}
+                            containerStyle={styles.textInputSmallWidth}
+                            onChangeText={onChangeTitle}
+                            value={title}
+                            validator={validateNameAndGetErrorMessage}
+                            forceValidation={forceValidate}
+                        />
+                    </View>
                     <InputText
-                        textInputStyle={{fontSize: 14, color: theme.black}}
-                        textAlign= {'left'}
-                        width={164}
-                        height={52}
-                        hint='Name'
+                        textInputStyle={{ fontSize: 14, color: theme.black }}
+                        textAlign={'left'}
+                        containerStyle={styles.textInputFullWidth}
+                        hint='E-Mail'
                         hintColor={theme.gray}
-                        borderColor={theme.darkGreen}
-                        borderWidth={3}
+                        onChangeText={onChangeEmail}
+                        value={email}
+                        validator={validateEmailAndGetErrorMessage}
+                        forceValidation={forceValidate}
                     />
                     <InputText
-                        textInputStyle={{fontSize: 14, color: theme.black}}
-                        textAlign= {'left'}
-                        width={164}
-                        height={52}
-                        hint='Title'
+                        textInputStyle={{ fontSize: 14, color: theme.black }}
+                        textAlign={'left'}
+                        hint='Password'
                         hintColor={theme.gray}
-                        borderColor={theme.darkGreen}
-                        borderWidth={3}
+                        containerStyle={styles.textInputFullWidth}
+                        onChangeText={onChangePassword}
+                        value={password}
+                        validator={validatePasswordAndGetErrorMessage}
+                        forceValidation={forceValidate}
+                    />
+                    <InputText
+                        textInputStyle={{ fontSize: 14, color: theme.black }}
+                        textAlign={'left'}
+                        hint='Confirm Password'
+                        hintColor={theme.gray}
+                        containerStyle={styles.textInputFullWidth}
+                        onChangeText={onChangeConfirmPassword}
+                        value={confirmPassword}
+                        forceValidation={forceValidate}
+                        confirmPasswordValidator={validateConfirmPasswordAndGetErrorMessage}
+                        password={password}
+                    />
+                    <Button
+                        width={148}
+                        height={48}
+                        borderRadius={24}
+                        textColor={theme.white}
+                        marginTop={67}
+                        textSize={16}
+                        alignSelf= 'center'
+                        marginBottom={20}
+                        text="Create Account"
+                        onPress={signup}
                     />
                 </View>
-                <InputText
-                    textInputStyle={{fontSize: 14, color: theme.black}}
-                    textAlign= {'left'}
-                    width={340}
-                    height={52}
-                    hint='E-Mail'
-                    hintColor={theme.gray}
-                    borderColor={theme.darkGreen}
-                    borderWidth={3}
-                    marginTop={40}
-                />
-                <InputText
-                    textInputStyle={{fontSize: 14, color: theme.black}}
-                    textAlign= {'left'}
-                    width={340}
-                    height={52}
-                    hint='Password'
-                    hintColor={theme.gray}
-                    borderColor={theme.darkGreen}
-                    borderWidth={3}
-                    marginTop={40}
-                />
-                <InputText
-                    textInputStyle={{fontSize: 14, color: theme.black}}
-                    textAlign= {'left'}
-                    width={340}
-                    height={52}
-                    hint='Confirm Password'
-                    hintColor={theme.gray}
-                    borderColor={theme.darkGreen}
-                    borderWidth={3}
-                    marginTop={40}
-                />
-                <Button
-                    width={148}
-                    height={48}
-                    borderRadius={24}
-                    textColor={theme.white}
-                    marginTop={67}
-                    textSize={16}
-                    text="Create Account"
-                    onPress={signup}
-                />
-            </ImageBackground>
-         </View>
+            </ScrollView>
+        </ImageBackground>
     );
 };
 
 const getStyles = (theme: Theme) => StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
     background: {
         flex: 1,
-        width: '100%',
-        alignItems: 'center',
+    },
+    container: {
+        justifyContent: 'center',
     },
     header1: {
         width: '100%',
         paddingHorizontal: 26,
         fontSize: 40,
-        color: '#EC8E31',
     },
     header2: {
         width: '100%',
@@ -127,6 +140,20 @@ const getStyles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 26,
         marginTop: 55,
+    },
+    textInputFullWidth: {
+        width: 340,
+        height: 52,
+        borderColor: theme.darkGreen,
+        borderWidth: 3,
+        marginTop: 40,
+        alignSelf: 'center'
+    },
+    textInputSmallWidth: {
+        width: 164,
+        height: 52,
+        borderColor: theme.darkGreen,
+        borderWidth: 3,
     },
 })
 
