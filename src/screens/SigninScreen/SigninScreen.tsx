@@ -5,9 +5,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import Theme from 'models/Theme';
 import ThemeContext from 'theme/ThemeContext';
 import { MainNavigationStackParams } from 'navigation/MainNavigationStack';
-import TabBar from '../../components/TabBar';
+import TabBar from 'components/TabBar';
 import { validateEmailAndGetErrorMessage, validatePasswordAndGetErrorMessage } from '../../utils/Validator';
 import { ScrollView } from 'react-native-gesture-handler';
+import FirebaseHandler from 'data/apis/FirebaseHandler';
 
 type Props = {
     navigation: StackNavigationProp<MainNavigationStackParams, 'SigninScreen'>
@@ -22,11 +23,18 @@ const SigninScreen = (props: Props) => {
     const toSignup = () => props.navigation.navigate('SignupScreen');
     const login = () => {
         onChangeForceValidate(forceValidate + "1")
-        if(!validateEmailAndGetErrorMessage(email).length &&
-        !validatePasswordAndGetErrorMessage(password).length){
-            console.log('login')
+        if (!validateEmailAndGetErrorMessage(email).length &&
+            !validatePasswordAndGetErrorMessage(password).length) {
+            FirebaseHandler.login(email, password)
+                .then(() => {
+                    FirebaseHandler.getUserName(email)
+                        .then(response => {
+                            console.log(response.name);
+                        }).catch(err => console.log(err));
+                }).catch(err => console.log(err));
         }
     }
+    
     const goBack = () => props.navigation.goBack();
     return (
         <ImageBackground
@@ -39,44 +47,44 @@ const SigninScreen = (props: Props) => {
                 leftIconPress={goBack}
             />
             <ScrollView contentContainerStyle={styles.container}>
-                    <Text style={styles.header1}>Hello Back</Text>
-                    <Text style={styles.header2}>Please Enter E-Mail and Password to Signin</Text>
-                    <InputText
-                        textInputStyle={{ fontSize: 14, color: theme.black }}
-                        textAlign={'left'}
-                        containerStyle={styles.textInputFullWidth}
-                        hint='E-Mail'
-                        hintColor={theme.gray}
-                        onChangeText={onChangeEmail}
-                        value={email}
-                        validator={validateEmailAndGetErrorMessage}
-                        forceValidation={forceValidate}
-                    />
-                    <InputText
-                        textInputStyle={{ fontSize: 14, color: theme.black }}
-                        textAlign={'left'}
-                        containerStyle={styles.textInputFullWidth}
-                        hint='Password'
-                        hintColor={theme.gray}
-                        onChangeText={onChangePassword}
-                        value={password}
-                        validator={validatePasswordAndGetErrorMessage}
-                        forceValidation={forceValidate}
-                    />
-                    <Button
-                        width={148}
-                        height={48}
-                        borderRadius={24}
-                        textColor={theme.white}
-                        marginTop={64}
-                        textSize={16}
-                        text="Signin"
-                        onPress={login}
-                    />
-                    <View style={styles.signupView}>
-                        <Text style={styles.toSignupTxt}>To Signup Press</Text>
-                        <Text style={styles.loginBtn} onPress={toSignup}>Here</Text>
-                    </View>
+                <Text style={styles.header1}>Hello Back</Text>
+                <Text style={styles.header2}>Please Enter E-Mail and Password to Signin</Text>
+                <InputText
+                    textInputStyle={{ fontSize: 14, color: theme.black }}
+                    textAlign={'left'}
+                    containerStyle={styles.textInputFullWidth}
+                    hint='E-Mail'
+                    hintColor={theme.gray}
+                    onChangeText={onChangeEmail}
+                    value={email}
+                    validator={validateEmailAndGetErrorMessage}
+                    forceValidation={forceValidate}
+                />
+                <InputText
+                    textInputStyle={{ fontSize: 14, color: theme.black }}
+                    textAlign={'left'}
+                    containerStyle={styles.textInputFullWidth}
+                    hint='Password'
+                    hintColor={theme.gray}
+                    onChangeText={onChangePassword}
+                    value={password}
+                    validator={validatePasswordAndGetErrorMessage}
+                    forceValidation={forceValidate}
+                />
+                <Button
+                    width={148}
+                    height={48}
+                    borderRadius={24}
+                    textColor={theme.white}
+                    marginTop={64}
+                    textSize={16}
+                    text="Signin"
+                    onPress={login}
+                />
+                <View style={styles.signupView}>
+                    <Text style={styles.toSignupTxt}>To Signup Press</Text>
+                    <Text style={styles.loginBtn} onPress={toSignup}>Here</Text>
+                </View>
             </ScrollView>
         </ImageBackground>
     );

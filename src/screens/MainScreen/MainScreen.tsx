@@ -14,6 +14,7 @@ const MainScreen = (props: Props) => {
     const theme = useContext(ThemeContext);
     const styles = getStyles(theme);
     const onContinuePressed = () => props.navigation.navigate('SigninScreen');
+
     return (
         <View style={styles.container}>
             <ImageBackground

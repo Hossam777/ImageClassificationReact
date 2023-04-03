@@ -5,9 +5,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import Theme from 'models/Theme';
 import ThemeContext from 'theme/ThemeContext';
 import { MainNavigationStackParams } from 'navigation/MainNavigationStack';
-import TabBar from '../../components/TabBar';
+import TabBar from 'components/TabBar';
 import { validateConfirmPasswordAndGetErrorMessage, validateEmailAndGetErrorMessage, validateNameAndGetErrorMessage, validatePasswordAndGetErrorMessage } from '../../utils/Validator';
 import { ScrollView } from 'react-native-gesture-handler';
+import FirebaseHandler from 'data/apis/FirebaseHandler';
 
 type Props = {
     navigation: StackNavigationProp<MainNavigationStackParams, 'SignupScreen'>
@@ -30,7 +31,22 @@ const SignupScreen = (props: Props) => {
         !validateEmailAndGetErrorMessage(email).length &&
         !validatePasswordAndGetErrorMessage(password).length &&
         !validateConfirmPasswordAndGetErrorMessage(password, confirmPassword).length){
-            console.log('Signup')
+            FirebaseHandler.signup(email, password)
+                .then(response => {
+                    FirebaseHandler.addUserName(email, name  + ' '+ title)
+                        .then(response2 => {
+                            console.log('signed up')
+                        }).catch(err => console.log(err));
+                })
+                .catch(err => {
+                    if (err.code === 'auth/email-already-in-use') {
+                        console.log('That email address is already in use!');
+                      }
+                      if (err.code === 'auth/invalid-email') {
+                        console.log('That email address is invalid!');
+                      }
+                      console.error(err);
+                });
         }
     }
     return (
